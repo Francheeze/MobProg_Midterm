@@ -15,11 +15,13 @@ export function Header({ title, back }: { title: string; back?: boolean }) {
   );
 }
 
-export function Thumb({ uri, h = 120 }: { uri: string | null; h?: number }) {
-  return uri
-    ? <Image source={{ uri }} style={{ height: h, width: '100%', borderRadius: 4 }} resizeMode="cover" />
+export function Thumb({ uri, h = 120 }: { uri: string | string[] | null; h?: number }) {
+  const src = Array.isArray(uri) ? uri[0] : uri;
+  return src
+    ? <Image source={{ uri: src }} style={{ height: h, width: '100%', borderRadius: 4 }} resizeMode="cover" />
     : <View style={[s.ph, { height: h }]}><Text style={s.phX}>✕</Text></View>;
 }
+
 
 const s = StyleSheet.create({
   header: { backgroundColor: C.navy, flexDirection: 'row', alignItems: 'center', padding: 16, gap: 10 },

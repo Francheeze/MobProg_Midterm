@@ -20,7 +20,7 @@ export default function Dashboard() {
         {list.length === 0 && <Text style={s.empty}>No incidents match. Tap + to report one.</Text>}
         {list.map(i => (
           <Pressable key={i.id} style={s.card} onPress={() => router.push(`/incident/${i.id}` as any)}>
-            <Thumb uri={i.image} />
+            <Thumb uri={i.image[0]} />
             <View style={s.row}><Text style={s.cardTitle}>{i.title}</Text><Text style={s.small}>{i.datetime.slice(0, 10)}</Text></View>
           </Pressable>
         ))}
