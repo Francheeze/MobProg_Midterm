@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
+import { C } from "./store";
 
 type IncidentHistoryCardProps = {
   photo: string;
@@ -42,8 +43,8 @@ export default function IncidentHistoryCard({
 const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
-    backgroundColor: "#FFFFFF",
-    borderRadius: 12,
+    backgroundColor: C.paper,
+    borderRadius: 6,
     padding: 12,
     marginBottom: 12,
   },
@@ -52,14 +53,14 @@ const styles = StyleSheet.create({
     width: 90,
     height: 90,
     borderRadius: 8,
-    backgroundColor: "#E5E5E5",
+    backgroundColor: C.line,
     alignItems: "center",
     justifyContent: "center",
   },
 
   photoPlaceholder: {
     fontSize: 24,
-    color: "#888",
+    color: C.navy,
   },
 
   details: {
@@ -71,24 +72,24 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#333",
+    color: C.ink,
   },
 
   category: {
     fontSize: 14,
-    color: "#555",
+    color: C.navy,
     marginTop: 4,
   },
 
   date: {
     fontSize: 13,
-    color: "#777",
+    color: C.mute,
     marginTop: 4,
   },
 
   location: {
     fontSize: 13,
-    color: "#777",
+    color: C.mute,
     marginTop: 4,
   },
 });

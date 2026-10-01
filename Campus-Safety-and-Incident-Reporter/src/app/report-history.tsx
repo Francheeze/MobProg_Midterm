@@ -4,9 +4,11 @@ import {
   TextInput,
   ScrollView,
   StyleSheet,
-  Pressable,
 } from "react-native";
-import IncidentHistoryCard from "../components/IncidentHistoryCard";
+import { useState } from "react";
+import IncidentHistoryCard from "../components/incidents/IncidentHistoryCard";
+import { C } from "../components/incidents/store";
+import { Header } from "../components/incidents/ui";
 
 const reports = [
   {
@@ -30,36 +32,42 @@ const reports = [
 ];
 
 export default function ReportHistory() {
+  const [query, setQuery] = useState("");
+  const normalizedQuery = query.trim().toLowerCase();
+  const filteredReports = reports.filter((report) =>
+    [report.title, report.category, report.date]
+      .join(" ")
+      .toLowerCase()
+      .includes(normalizedQuery),
+  );
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Pressable
-          style={styles.backButton}
-          onPress={() => {}}
-        >
-          <Text style={styles.backArrow}>‹</Text>
-        </Pressable>
-
-        <Text style={styles.title}>Report History</Text>
-      </View>
-
-      <TextInput
-        style={styles.search}
-        placeholder="Search reports..."
-      />
-
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {reports.map((report, index) => (
-          <IncidentHistoryCard
-            key={index}
-            photo=""
-            title={report.title}
-            category={report.category}
-            date={report.date}
-            location={report.location}
+      <Header title="Report History" back />
+      <View style={styles.content}>
+        <View style={styles.searchWrap}>
+          <TextInput
+            style={styles.search}
+            placeholder="Search reports..."
+            value={query}
+            onChangeText={setQuery}
           />
-        ))}
-      </ScrollView>
+          <Text style={styles.searchIcon}>⌕</Text>
+        </View>
+
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {filteredReports.map((report, index) => (
+            <IncidentHistoryCard
+              key={index}
+              photo=""
+              title={report.title}
+              category={report.category}
+              date={report.date}
+              location={report.location}
+            />
+          ))}
+        </ScrollView>
+      </View>
     </View>
   );
 }
@@ -67,44 +75,35 @@ export default function ReportHistory() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FAFAFA",
+    backgroundColor: C.bg,
+  },
+
+  content: {
+    flex: 1,
     padding: 20,
   },
 
-  header: {
+  searchWrap: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 30,
     marginBottom: 16,
-  },
-
-  backButton: {
-    width: 36,
-    height: 36,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 8,
-  },
-
-backArrow: {
-  fontSize: 32,
-  color: "#333",
-  marginTop: -4,
-},
-
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#333",
+    paddingHorizontal: 12,
+    backgroundColor: C.paper,
+    borderWidth: 1,
+    borderColor: C.line,
+    borderRadius: 6,
   },
 
   search: {
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: "#DDD",
-    borderRadius: 10,
-    paddingHorizontal: 14,
+    flex: 1,
+    minWidth: 0,
     paddingVertical: 10,
-    marginBottom: 16,
+    fontSize: 13,
+    borderWidth: 0,
+    backgroundColor: "transparent",
+  },
+
+  searchIcon: {
+    color: C.mute,
   },
 });

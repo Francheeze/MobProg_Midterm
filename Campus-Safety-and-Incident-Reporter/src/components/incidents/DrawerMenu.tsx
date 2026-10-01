@@ -9,7 +9,7 @@ type Props = { visible: boolean; onClose: () => void; username: string; onLogout
 
 const ITEMS = [
   { label: 'Dashboard', icon: 'grid-outline', path: '/dashboard' },
-  { label: 'Reports history', icon: 'time-outline', path: '/history' },
+{ label: 'Reports history', icon: 'time-outline', path: '/report-history' },
 ] as const;
 
 export default function DrawerMenu({ visible, onClose, username, onLogout }: Props) {
