@@ -1,105 +1,56 @@
-# Campus Safety and Incident Reporter
+# Welcome to your Expo app 👋
 
-Campus Safety and Incident Reporter is an application that allows users to quickly report safety incidents on campus, helping school security respond faster and keep everyone safe.
+This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-## What it does
-- Provides a dashboard with recent reports and quick access to the incident report form
-- Lets users submit incident reports with a category, description, photo, and location
-- Captures photo evidence with the device camera and shows a photo preview before submitting
-- Attaches the user's current GPS location to every report
-- Handles camera and location permissions, with a clear message when access is denied
-- Saves reports in local storage and lists them in a report history
-- Uses reusable components (IncidentCard, ReportButton, CategorySelector, LocationDisplay)
+## Get started
 
-It's a secure, school-only system that digitizes and streamlines campus incident reporting and safety response. 
-
----
-
-##  Team Members
-
-| Name | 
-|------|
-| Apal, Francis Cesar|
-| Baclia-an, Honey Grace|
-| Collera, Rienard|
-| Quitoriano, Maegun Aixel|
-| Sawitan, Marianne Joeriddine |
-
----
-
-## Teach Stack
-- **React Native** - Mobile app framework
-- **Expo - Development** platform and tooling
-- **Expo Router** - File-based routing
-- **TypeScript** - Language
-- **Expo Camera** - Capturing incident evidence
-- **Expo Location** - GPS/location information
-- **AsyncStorage**- Local storage for saved reports
-
-## Repository Link
-https://github.com/Francheeze/MobProg_Midterm.git
-
-## Architecture
- 
-The app follows a layered architecture:
- 
-```
-Presentation  →  Incident Form
-      ↓
-Business      →  Validate Report
-      ↓
-Data          →  Local Storage
-```
-
-| Layer | Responsibility |
-|-------|----------------|
-| Presentation | Screens and components the user interacts with (dashboard, incident form, report history) |
-| Business | Validates reports (category, description, photo, location) before saving |
-| Data | Saves and retrieves reports from local storage |
-
-## Setup Instructions
- 
 1. Install dependencies
-```bash
+
+   ```bash
    npm install
-```
- 
+   ```
+
 2. Start the app
-```bash
+
+   ```bash
    npx expo start
-```
- 
+   ```
+
 In the output, you'll find options to open the app in a
- 
+
 - [development build](https://docs.expo.dev/develop/development-builds/introduction/)
 - [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
 - [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
 - [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
- 
----
- 
-## Permissions
- 
-The app asks for the following permissions when needed:
- 
-- **Camera** - to capture photo evidence of an incident
-- **Location** - to attach the current location to a report
----
- 
-## Repository Link
- 
-`<add repository link here>`
- 
----
- 
-## System Screenshots
- 
-### 1. Dashboard
-`<add screenshot here>`
- 
-### 2. Incident Report Form
-`<add screenshot here>`
- 
-### 3. Report History
-`<add screenshot here>`
+
+## Get a fresh project
+
+When you're ready, run:
+
+```bash
+npm run reset-project
+```
+
+This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+
+### Other setup steps
+
+- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
+- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
+- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+
+## Learn more
+
+To learn more about developing your project with Expo, look at the following resources:
+
+- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
+- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+
+## Join the community
+
+Join our community of developers creating universal apps.
+
+- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
+- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
