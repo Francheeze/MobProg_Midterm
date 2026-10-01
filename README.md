@@ -6,7 +6,7 @@ Campus Safety and Incident Reporter is an application that allows users to quick
 - Provides a dashboard with recent reports and quick access to the incident report form
 - Lets users submit incident reports with a category, description, photo, and location
 - Captures photo evidence with the device camera and shows a photo preview before submitting
-- Attaches the user's current GPS location to every report
+- Attaches the incident location to every report
 - Handles camera and location permissions, with a clear message when access is denied
 - Saves reports in local storage and lists them in a report history
 - Uses reusable components (IncidentCard, ReportButton, CategorySelector, LocationDisplay)
@@ -33,7 +33,7 @@ It's a secure, school-only system that digitizes and streamlines campus incident
 - **Expo Router** - File-based routing
 - **TypeScript** - Language
 - **Expo Camera** - Capturing incident evidence
-- **Expo Location** - GPS/location information
+- **Expo Location** - location information
 - **AsyncStorage**- Local storage for saved reports
 
 ## Repository Link
@@ -84,7 +84,6 @@ You can start developing by editing the files inside the **app** directory. This
 The app asks for the following permissions when needed:
  
 - **Camera** - to capture photo evidence of an incident
-- **Location** - to attach the current location to a report
 
 ---
  
