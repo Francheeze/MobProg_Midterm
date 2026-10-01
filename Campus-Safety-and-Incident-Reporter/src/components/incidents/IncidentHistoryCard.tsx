@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import { C } from "./store";
 
 type IncidentHistoryCardProps = {
@@ -10,6 +10,7 @@ type IncidentHistoryCardProps = {
 };
 
 export default function IncidentHistoryCard({
+  photo,
   title,
   category,
   date,
@@ -17,9 +18,13 @@ export default function IncidentHistoryCard({
 }: IncidentHistoryCardProps) {
   return (
     <View style={styles.card}>
-      <View style={styles.photo}>
-        <Text style={styles.photoPlaceholder}>X</Text>
-      </View>
+      {photo ? (
+        <Image source={{ uri: photo }} style={styles.photo} resizeMode="cover" />
+      ) : (
+        <View style={styles.photo}>
+          <Text style={styles.photoPlaceholder}>X</Text>
+        </View>
+      )}
 
       <View style={styles.details}>
         <Text style={styles.title}>{title}</Text>

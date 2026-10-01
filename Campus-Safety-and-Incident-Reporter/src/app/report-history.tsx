@@ -7,35 +7,16 @@ import {
 } from "react-native";
 import { useState } from "react";
 import IncidentHistoryCard from "../components/incidents/IncidentHistoryCard";
-import { C } from "../components/incidents/store";
+import { C, useIncidents } from "../components/incidents/store";
 import { Header } from "../components/incidents/ui";
 
-const reports = [
-  {
-    title: "Broken Window",
-    category: "Property Damage",
-    date: "October 1, 2026",
-    location: null,
-  },
-  {
-    title: "Suspicious Activity",
-    category: "Security",
-    date: "September 30, 2026",
-    location: null,
-  },
-  {
-    title: "Wet Floor",
-    category: "Safety Hazard",
-    date: "September 29, 2026",
-    location: null,
-  },
-];
-
 export default function ReportHistory() {
+  const { items } = useIncidents();
   const [query, setQuery] = useState("");
+  const reports = items;
   const normalizedQuery = query.trim().toLowerCase();
   const filteredReports = reports.filter((report) =>
-    [report.title, report.category, report.date]
+    [report.title, report.category, report.datetime, report.location]
       .join(" ")
       .toLowerCase()
       .includes(normalizedQuery),
@@ -56,13 +37,16 @@ export default function ReportHistory() {
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false}>
+          {filteredReports.length === 0 && (
+            <Text style={styles.empty}>No reports to show yet.</Text>
+          )}
           {filteredReports.map((report, index) => (
             <IncidentHistoryCard
-              key={index}
-              photo=""
+              key={report.id}
+              photo={report.image[0] ?? ""}
               title={report.title}
               category={report.category}
-              date={report.date}
+              date={report.datetime}
               location={report.location}
             />
           ))}
@@ -105,5 +89,11 @@ const styles = StyleSheet.create({
 
   searchIcon: {
     color: C.mute,
+  },
+
+  empty: {
+    color: C.mute,
+    textAlign: "center",
+    marginTop: 40,
   },
 });
