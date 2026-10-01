@@ -2,12 +2,14 @@ import { Text } from "react-native";
 import { useEffect, useState } from "react";
 import * as Location from "expo-location";
 
-export default function LocationDisplay() {
-  const [status, setStatus] = useState(
-    "Getting current location..."
-  );
+type LocationDisplayProps = {
+  onLocationChange?: (location: string | null) => void;
+};
 
-  const [coordinates, setCoordinates] = useState("");
+export default function LocationDisplay({
+  onLocationChange,
+}: LocationDisplayProps) {
+  const [location, setLocation] = useState<string | null>(null);
 
   useEffect(() => {
     getLocation();
@@ -21,24 +23,20 @@ export default function LocationDisplay() {
       const latitude = currentLocation.coords.latitude;
       const longitude = currentLocation.coords.longitude;
 
-      setStatus("Location retrieved successfully.");
+      const locationText =
+        `Latitude: ${latitude}\nLongitude: ${longitude}`;
 
-      setCoordinates(
-        `Latitude: ${latitude}\nLongitude: ${longitude}`
-      );
+      setLocation(locationText);
+      onLocationChange?.(locationText);
     } catch (error) {
-      setStatus("Unable to retrieve location.");
-
-      setCoordinates(
-        "Location permission has not been granted."
-      );
+      setLocation(null);
+      onLocationChange?.(null);
     }
   };
 
   return (
-    <>
-      <Text>{status}</Text>
-      <Text>{coordinates}</Text>
-    </>
+    <Text>
+      {location ?? "Location unavailable"}
+    </Text>
   );
 }
