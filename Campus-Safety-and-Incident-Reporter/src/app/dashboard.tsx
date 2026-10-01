@@ -1,8 +1,11 @@
-import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { C, CATEGORIES, Incident, useIncidents } from '../components/incidents/store';
 import { Header, Thumb } from '../components/incidents/ui';
+import DrawerMenu from '../components/incidents/DrawerMenu';
 
 function PhotoSwiper({ photos }: { photos: string[] }) {
   const { width: screenW } = useWindowDimensions();
@@ -43,7 +46,10 @@ function PhotoSwiper({ photos }: { photos: string[] }) {
 
 export default function Dashboard() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
+  const { username } = useLocalSearchParams<{ username?: string }>();
   const { items } = useIncidents();
+  const [menuOpen, setMenuOpen] = useState(false);
   const [q, setQ] = useState('');
   const [category, setCategory] = useState<string | null>(null);
   const [preview, setPreview] = useState<Incident | null>(null);
@@ -55,6 +61,13 @@ export default function Dashboard() {
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
       <Header title="Dashboard" />
+      <Pressable
+        onPress={() => setMenuOpen(true)}
+        hitSlop={10}
+        accessibilityLabel="Open menu"
+        style={[s.menuButton, { top: insets.top + 12 }]}>
+        <Ionicons name="menu" size={28} color="#fff" />
+      </Pressable>
       <View style={s.searchWrap}>
         <TextInput style={s.search} placeholder="Search by title, category, date" value={q} onChangeText={setQ} />
         <Text style={{ color: C.mute }}>⌕</Text>
@@ -132,11 +145,18 @@ export default function Dashboard() {
       <Pressable style={s.fab} onPress={() => router.push('/report' as any)} accessibilityLabel="New incident report">
         <Text style={s.plus}>+</Text>
       </Pressable>
+      <DrawerMenu
+        visible={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        username={username ?? 'User'}
+        onLogout={() => router.replace('/login' as any)}
+      />
     </View>
   );
 }
 
 const s = StyleSheet.create({
+   menuButton: { position: 'absolute', right: 16, zIndex: 10 },
   searchWrap: { flexDirection: 'row', alignItems: 'center', margin: 16, marginBottom: 0, paddingHorizontal: 12, backgroundColor: '#fff', borderWidth: 1, borderColor: C.line, borderRadius: 6 },
   search: { flex: 1, minWidth: 0, paddingVertical: 10, fontSize: 13, borderWidth: 0, backgroundColor: 'transparent', outlineStyle: 'none' } as any,
   categories: { paddingHorizontal: 16, paddingTop: 12, paddingBottom: 4, gap: 8, alignItems: 'center' },
