@@ -33,7 +33,7 @@ It's a secure, school-only system that digitizes and streamlines campus incident
 - **Expo Router** - File-based routing
 - **TypeScript** - Language
 - **Expo Camera** - Capturing incident evidence
-- **Expo Location** - GPS/location information
+- **Expo Location** - location information
 - **AsyncStorage**- Local storage for saved reports
 
 ## Repository Link
