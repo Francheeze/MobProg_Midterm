@@ -21,7 +21,7 @@ It's a secure, school-only system that digitizes and streamlines campus incident
 |------|
 | Apal, Francis Cesar|
 | Baclia-an, Honey Grace|
-| Collera, Rienard|
+| Collera, Reinard|
 | Quitoriano, Maegun Aixel|
 | Sawitan, Marianne Joeriddine |
 
