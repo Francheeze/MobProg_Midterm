@@ -6,8 +6,9 @@ import { Header, Thumb } from '../components/incidents/ui';
 
 function PhotoSwiper({ photos }: { photos: string[] }) {
   const { width: screenW } = useWindowDimensions();
-  const w = screenW - 36 - 32; // backdrop padding (18*2) + previewContent padding (16*2)
+  const w = screenW - 36 - 32;
   const [index, setIndex] = useState(0);
+  const [full, setFull] = useState<string | null>(null);
 
   return (
     <View>
@@ -17,7 +18,9 @@ function PhotoSwiper({ photos }: { photos: string[] }) {
         showsHorizontalScrollIndicator={false}
         onMomentumScrollEnd={e => setIndex(Math.round(e.nativeEvent.contentOffset.x / w))}>
         {photos.map((uri, n) => (
-          <Image key={n} source={{ uri }} style={{ width: w, height: 170, borderRadius: 6 }} resizeMode="cover" />
+          <Pressable key={n} onPress={() => setFull(uri)}>
+            <Image source={{ uri }} style={{ width: w, height: 170, borderRadius: 6 }} resizeMode="cover" />
+          </Pressable>
         ))}
       </ScrollView>
       {photos.length > 1 && (
@@ -27,6 +30,13 @@ function PhotoSwiper({ photos }: { photos: string[] }) {
           ))}
         </View>
       )}
+
+      <Modal visible={full !== null} transparent animationType="fade" onRequestClose={() => setFull(null)}>
+        <Pressable style={s.fullBackdrop} onPress={() => setFull(null)}>
+          {full && <Image source={{ uri: full }} style={s.fullImage} resizeMode="contain" />}
+          <Text style={s.fullClose}>×</Text>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -157,4 +167,7 @@ const s = StyleSheet.create({
   dots: { flexDirection: 'row', justifyContent: 'center', gap: 6, marginTop: 8 },
 dot: { width: 7, height: 7, borderRadius: 4, backgroundColor: C.line },
 dotActive: { backgroundColor: C.navy },
+fullBackdrop: { flex: 1, backgroundColor: '#000', justifyContent: 'center', alignItems: 'center' },
+fullImage: { width: '100%', height: '100%' },
+fullClose: { position: 'absolute', top: 40, right: 20, color: '#fff', fontSize: 36 },
 });
