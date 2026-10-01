@@ -1,8 +1,8 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { C, useIncidents } from '../../components/incidents/store';
-import { Header, Thumb } from '../../components/incidents/ui';
+import { C, useIncidents } from '../components/incidents/store';
+import { Header, Thumb } from '../components/incidents/ui';
 
 export default function Dashboard() {
   const router = useRouter();
