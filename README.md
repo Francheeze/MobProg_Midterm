@@ -85,12 +85,7 @@ The app asks for the following permissions when needed:
  
 - **Camera** - to capture photo evidence of an incident
 - **Location** - to attach the current location to a report
----
- 
-## Repository Link
- 
-`<add repository link here>`
- 
+
 ---
  
 ## System Screenshots
