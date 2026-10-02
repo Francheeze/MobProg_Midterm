@@ -137,15 +137,7 @@ export default function Dashboard() {
                     </View>
                   ))}
                 </ScrollView>
-                <Pressable
-                  style={s.editButton}
-                  onPress={() => {
-                    const incidentId = preview.id;
-                    setPreview(null);
-                    router.push({ pathname: '/report', params: { id: incidentId } } as any);
-                  }}>
-                  <Text style={s.editText}>Edit report</Text>
-                </Pressable>
+                
               </>
             )}
           </View>
