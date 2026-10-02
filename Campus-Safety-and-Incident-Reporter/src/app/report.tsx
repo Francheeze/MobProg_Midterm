@@ -13,6 +13,7 @@ import LocationSelector from '../components/LocationSelector';
 import PhotoSlots from '../components/incidents/PhotoSlots';
 import PhotoSourceSheet from '../components/incidents/PhotoSourceSheet';
 import { takeAllPendingPhotos, subscribePendingPhoto } from '@/services/pendingPhoto';
+import { keepPhoto } from '../services/keepPhoto';
 
 const MIN_IMAGES = 1;
 const MAX_IMAGES = 3;
@@ -85,21 +86,28 @@ const openPicker = () => {
   };
   const removeImage = (uri: string) => set('image')(f.image.filter(u => u !== uri));
 
-  const submit = () => {
-  const details = validateIncidentDetails((f.category || null) as IncidentCategory | null, f.description);
-  setErrors(details);
+  const submit = async () => {
+    const details = validateIncidentDetails((f.category || null) as IncidentCategory | null, f.description);
+    setErrors(details);
 
-  const titleMissing = !f.title.trim();
-  setErr(titleMissing ? 'Add a title.' : '');
+    const titleMissing = !f.title.trim();
+    setErr(titleMissing ? 'Add a title.' : '');
 
-  const tooFewPhotos = f.image.length < MIN_IMAGES;
-   setPhotoErr(tooFewPhotos ? `Attach at least ${MIN_IMAGES} photos.` : '');
+    const tooFewPhotos = f.image.length < MIN_IMAGES;
+    setPhotoErr(tooFewPhotos ? `Attach at least ${MIN_IMAGES} photos.` : '');
 
-  if (titleMissing || tooFewPhotos || Object.keys(details).length > 0) return;
+    if (titleMissing || tooFewPhotos || Object.keys(details).length > 0) return;
 
-  save({ ...f, datetime: f.datetime || new Date().toISOString().slice(0, 16).replace('T', ' ') });
-  router.replace('/dashboard' as any);
-};
+    // Copy photos into permanent storage so they survive an app restart
+    const photos = await Promise.all(f.image.map(keepPhoto));
+
+    save({
+      ...f,
+      image: photos,
+      datetime: f.datetime || new Date().toISOString().slice(0, 16).replace('T', ' '),
+    });
+    router.replace('/dashboard' as any);
+  };
 
 console.log('PHOTOS STATE:', f.image);
 

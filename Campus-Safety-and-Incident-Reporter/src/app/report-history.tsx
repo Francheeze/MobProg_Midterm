@@ -7,13 +7,15 @@ import {
 } from "react-native";
 import { useState } from "react";
 import IncidentHistoryCard from "../components/incidents/IncidentHistoryCard";
-import { C, useIncidents } from "../components/incidents/store";
+import { C, useIncidents, useCurrentUser } from "../components/incidents/store";
 import { Header } from "../components/incidents/ui";
+
 
 export default function ReportHistory() {
   const { items } = useIncidents();
+  const currentUser = useCurrentUser();
   const [query, setQuery] = useState("");
-  const reports = items;
+  const reports = items.filter((r) => r.author === currentUser);
   const normalizedQuery = query.trim().toLowerCase();
   const filteredReports = reports.filter((report) =>
     [report.title, report.category, report.datetime, report.location]

@@ -3,7 +3,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { C, CATEGORIES, Incident, useIncidents } from '../components/incidents/store';
+import { C, CATEGORIES, Incident, useIncidents, setCurrentUser, useCurrentUser } from '../components/incidents/store';
 import { Header, Thumb } from '../components/incidents/ui';
 import DrawerMenu from '../components/incidents/DrawerMenu';
 
@@ -57,6 +57,7 @@ export default function Dashboard() {
   const insets = useSafeAreaInsets();
   const { username } = useLocalSearchParams<{ username?: string }>();
   const { items } = useIncidents();
+  const currentUser = useCurrentUser();
   const [menuOpen, setMenuOpen] = useState(false);
   const [q, setQ] = useState('');
   const [category, setCategory] = useState<string | null>(null);
@@ -156,8 +157,8 @@ export default function Dashboard() {
       <DrawerMenu
         visible={menuOpen}
         onClose={() => setMenuOpen(false)}
-        username={username ?? 'User'}
-        onLogout={() => router.replace('/login' as any)}
+        username={username ?? currentUser ?? 'User'}
+        onLogout={() => { setCurrentUser(null); router.replace('/login' as any); }}
       />
     </View>
   );
