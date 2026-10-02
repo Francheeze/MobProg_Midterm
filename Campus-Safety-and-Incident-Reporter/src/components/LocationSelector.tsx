@@ -9,7 +9,6 @@ type Props = {
 export default function LocationSelector({ value, onChange }: Props) {
   const query = value.trim().toLowerCase();
 
-  // Campus places that contain what the user typed (hidden once it matches exactly)
   const matches = query
     ? CAMPUS_LOCATIONS.filter(
         (place) => place.toLowerCase().includes(query) && place.toLowerCase() !== query
