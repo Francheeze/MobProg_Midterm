@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { loginUser } from "../storage/users";
+import { setCurrentUser } from "../components/incidents/store";
 
 export default function Login() {
   const router = useRouter();
@@ -28,6 +29,12 @@ export default function Login() {
       Alert.alert("Login failed", "Incorrect email/username or password.");
       return;
     }
+
+    setCurrentUser(user.username);
+    router.replace({
+      pathname: "/dashboard",
+      params: { username: user.username },
+    });
 
     router.replace({
       pathname: "/dashboard",
