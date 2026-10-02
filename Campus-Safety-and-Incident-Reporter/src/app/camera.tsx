@@ -7,8 +7,7 @@ import { useCameraCapture } from '@/hooks/useCameraCapture';
 import { useCameraPermission } from '@/hooks/useCameraPermission';
 import { Colors } from '@/constants/colors';
 import { setPendingPhoto } from '@/services/pendingPhoto';
-
-const REPORT_FORM_ROUTE = '/report';
+import { persistPhoto } from '@/services/photoStorage';
 
 export default function CameraScreen() {
   const router = useRouter();
@@ -18,7 +17,14 @@ export default function CameraScreen() {
   // 1. Still checking permission
   if (permission.status === 'loading') {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.background }}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: Colors.background,
+        }}
+      >
         <ActivityIndicator size="large" color={Colors.navy} />
       </View>
     );
@@ -52,15 +58,11 @@ export default function CameraScreen() {
       <PhotoPreview
         uri={camera.photoUri}
         onRetake={camera.retake}
-        onConfirm={() =>
-          {
-            console.log('CAPTURED URI:', camera.photoUri); 
-            setPendingPhoto(camera.photoUri!);
-            router.navigate({
-              pathname: REPORT_FORM_ROUTE as any
-            });
-          }
-        }
+        onConfirm={() => {
+          persistPhoto(camera.photoUri!); // copy to permanent storage
+          setPendingPhoto(camera.photoUri!);
+          router.back(); // return to the SAME form so its state stays intact
+        }}
       />
     );
   }
