@@ -11,7 +11,11 @@ export type Incident = {
 export const C = { navy: '#0f2d55', yellow: '#f5c332', paper: '#e9e9e9', line: '#c9c9c9', ink: '#1c1c1c', mute: '#6b6b6b', bg: '#f4f5f7' };
 export const CATEGORIES = INCIDENT_CATEGORIES;
 
-type Store = { items: Incident[]; save: (i: Omit<Incident, 'id'> & { id?: string }) => void };
+type Store = {
+  items: Incident[];
+  save: (i: Omit<Incident, 'id'> & { id?: string }) => void;
+  remove: (id: string) => void;
+};
 
 const REPORTS_KEY = 'reports';
 
@@ -38,6 +42,12 @@ const save: Store['save'] = d => {
   notify();
 };
 
+const remove: Store['remove'] = id => {
+  items = items.filter(i => i.id !== id);
+  AsyncStorage.setItem(REPORTS_KEY, JSON.stringify(items));
+  notify();
+};
+
 const subscribe = (l: () => void) => {
   listeners.add(l);
   return () => { listeners.delete(l); };
@@ -45,7 +55,7 @@ const subscribe = (l: () => void) => {
 
 export const useIncidents = () => {
   const list = useSyncExternalStore(subscribe, () => items);
-  return { items: list, save };
+  return { items: list, save, remove };
 };
 
 // Who is logged in right now

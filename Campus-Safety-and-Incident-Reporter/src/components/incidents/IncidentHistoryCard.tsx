@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import { C } from "./store";
 
 type IncidentHistoryCardProps = {
@@ -7,6 +7,7 @@ type IncidentHistoryCardProps = {
   category: string;
   date: string;
   location: string | null;
+  onPress?: () => void;
 };
 
 export default function IncidentHistoryCard({
@@ -15,9 +16,10 @@ export default function IncidentHistoryCard({
   category,
   date,
   location,
+  onPress,
 }: IncidentHistoryCardProps) {
   return (
-    <View style={styles.card}>
+    <Pressable style={styles.card} onPress={onPress} disabled={!onPress}>
       {photo ? (
         <Image source={{ uri: photo }} style={styles.photo} resizeMode="cover" />
       ) : (
@@ -41,7 +43,7 @@ export default function IncidentHistoryCard({
           {location ?? "Location unavailable"}
         </Text>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
