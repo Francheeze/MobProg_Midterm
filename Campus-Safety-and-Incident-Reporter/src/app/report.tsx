@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, Text, TextInput, Pressable, ScrollView, Image, StyleSheet} from 'react-native';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { C, useIncidents, Incident } from '../components/incidents/store';
 import CategorySelector from '../components/CategorySelector';
@@ -10,6 +10,9 @@ import { IncidentCategory } from '../constants/incidents';
 import { IncidentDetailsErrors, validateIncidentDetails } from '../services/validateIncident';
 import { Header } from '../components/incidents/ui';
 import LocationSelector from '../components/LocationSelector';
+import PhotoSlots from '../components/incidents/PhotoSlots';
+import PhotoSourceSheet from '../components/incidents/PhotoSourceSheet';
+import { takePendingPhoto } from '@/services/pendingPhoto';
 
 const MIN_IMAGES = 1;
 const MAX_IMAGES = 3;
@@ -26,16 +29,26 @@ const fromText = (t: string) => {
 };
 
 export default function Report() {
-  const { id } = useLocalSearchParams<{ id?: string }>();
-  const router = useRouter();
+  const { id } = useLocalSearchParams<{ id?: string }>();  const router = useRouter();
   const { items, save } = useIncidents();
   const [f, setF] = useState<Draft>(() => items.find(i => i.id === id) ?? empty);
   const [errors, setErrors] = useState<IncidentDetailsErrors>({});
   const [err, setErr] = useState('');
   const [photoErr, setPhotoErr] = useState('');
+  const [sheetOpen, setSheetOpen] = useState(false);
   const set = <K extends keyof Draft>(k: K) => (v: Draft[K]) =>
     setF(prev => ({ ...prev, [k]: v }));
 
+  useFocusEffect(
+  useCallback(() => {
+    const uri = takePendingPhoto();
+    console.log('PICKED UP URI:', uri);
+    if (uri) {
+      setF(prev => ({ ...prev, image: [...prev.image, uri].slice(0, MAX_IMAGES) }));
+      setPhotoErr('');
+    }
+  }, [])
+);
 
 const openPicker = () => {
   DateTimePickerAndroid.open({
@@ -88,25 +101,20 @@ const openPicker = () => {
   router.replace('/dashboard' as any);
 };
 
+console.log('PHOTOS STATE:', f.image);
+
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
       <Header title="Incident Report Form" back />
       <ScrollView contentContainerStyle={{ padding: 20 }} keyboardShouldPersistTaps="handled">
 
-                <View style={s.photoRow}>
-  {Array.from({ length: MAX_IMAGES }).map((_, i) => {
-    const uri = f.image[i];
-    return uri ? (
-      <Pressable key={uri} style={s.slot} onPress={() => removeImage(uri)} accessibilityLabel="Remove photo">
-        <Image source={{ uri }} style={s.slotImg} />
-      </Pressable>
-    ) : (
-      <Pressable key={`empty-${i}`} style={s.slot} onPress={pick} accessibilityLabel="Add photo">
-        <Text style={{ fontSize: 28 }}>+</Text>
-      </Pressable>
-    );
-  })}
-</View>
+<PhotoSlots
+  photos={f.image}
+  max={MAX_IMAGES}
+  min={MIN_IMAGES}
+  onAddPress={() => f.image.length < MAX_IMAGES && setSheetOpen(true)}
+  onRemove={(i) => removeImage(f.image[i])}
+/>
 <Text style={{ textAlign: 'center', fontSize: 11, color: C.mute }}>
   {f.image.length}/{MAX_IMAGES} photos (minimum {MIN_IMAGES})
 </Text>
@@ -137,6 +145,13 @@ const openPicker = () => {
         </View>
         {!!err && <Text style={s.err}>{err}</Text>}
         <Pressable style={s.submit} onPress={submit}><Text style={s.submitTxt}>Submit report</Text></Pressable>
+
+        <PhotoSourceSheet
+          visible={sheetOpen}
+          onClose={() => setSheetOpen(false)}
+          onCapture={() => { setSheetOpen(false); router.push('/camera' as any); }}
+          onAttach={() => { setSheetOpen(false); pick(); }}
+        />
       </ScrollView>
     </View>
   );
@@ -155,7 +170,7 @@ const s = StyleSheet.create({
   },
   err: { color: '#b3261e', marginTop: 12 },
 
-  // Photo slots
+  // Photo slots (no longer used by this screen, safe to delete)
   photoRow: { flexDirection: 'row', justifyContent: 'center', gap: 8 },
   slot: {
     width: 96,
