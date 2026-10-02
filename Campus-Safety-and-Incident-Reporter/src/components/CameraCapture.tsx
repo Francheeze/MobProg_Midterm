@@ -1,8 +1,7 @@
 import type { RefObject } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { CameraView, type CameraType } from 'expo-camera';
-import { Ionicons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '@/constants/colors';
 
 type Props = {
@@ -14,7 +13,7 @@ type Props = {
   onCapture: () => void;
 };
 
-/** "Camera" frame in the wireframe: live preview + flip button + shutter button. */
+/** "Camera" frame in the wireframe: live preview, flip button, shutter button. */
 export default function CameraCapture({
   cameraRef,
   facing,
@@ -23,70 +22,60 @@ export default function CameraCapture({
   onFlip,
   onCapture,
 }: Props) {
+  const insets = useSafeAreaInsets();
+
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <View style={styles.previewWrapper}>
-        <CameraView ref={cameraRef} style={styles.preview} facing={facing} />
-        {error && <Text style={styles.error}>{error}</Text>}
-      </View>
+    <View style={[styles.container, { paddingTop: insets.top + 12, paddingBottom: insets.bottom + 16 }]}>
+      <CameraView ref={cameraRef} style={styles.camera} facing={facing} />
+
+      {!!error && <Text style={styles.error}>{error}</Text>}
 
       <View style={styles.controls}>
-        <Pressable onPress={onFlip} hitSlop={12} accessibilityLabel="Flip camera">
-          <Ionicons name="camera-reverse-outline" size={32} color={Colors.text} />
+        {/* Flip camera: text symbol, so it shows even if the icon font fails to load */}
+        <Pressable
+          onPress={onFlip}
+          hitSlop={12}
+          accessibilityLabel="Flip camera"
+          style={styles.flip}>
+          <Text style={styles.flipText}>⇆</Text>
         </Pressable>
 
         <Pressable
           onPress={onCapture}
           disabled={isCapturing}
           accessibilityLabel="Take photo"
-          style={styles.shutterOuter}
-        >
-          {isCapturing ? (
-            <ActivityIndicator color={Colors.navy} />
-          ) : (
-            <View style={styles.shutterInner} />
-          )}
+          style={[styles.shutter, isCapturing && styles.disabled]}>
+          {isCapturing && <ActivityIndicator color={Colors.navy} />}
         </Pressable>
 
-        {/* spacer keeps the shutter centered */}
-        <View style={{ width: 32 }} />
+        <View style={styles.flip} />
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
-  previewWrapper: { flex: 1, margin: 16, backgroundColor: Colors.cameraBg, overflow: 'hidden' },
-  preview: { flex: 1 },
-  error: {
-    position: 'absolute',
-    bottom: 12,
-    alignSelf: 'center',
-    backgroundColor: Colors.danger,
-    color: Colors.white,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-    overflow: 'hidden',
-  },
+  container: { flex: 1, backgroundColor: Colors.background, paddingHorizontal: 16 },
+  camera: { flex: 1, borderRadius: 8, overflow: 'hidden' },
+  error: { color: Colors.danger, textAlign: 'center', marginTop: 8 },
   controls: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 40,
-    paddingBottom: 16,
-    height: 90,
+    paddingHorizontal: 24,
+    paddingTop: 16,
   },
-  shutterOuter: {
+  flip: { width: 56, height: 56, alignItems: 'center', justifyContent: 'center' },
+  flipText: { fontSize: 32, color: Colors.text },
+  shutter: {
     width: 68,
     height: 68,
     borderRadius: 34,
-    borderWidth: 3,
+    backgroundColor: Colors.panel,
+    borderWidth: 4,
     borderColor: Colors.navy,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.panel,
   },
-  shutterInner: { width: 52, height: 52, borderRadius: 26, backgroundColor: Colors.white },
+  disabled: { opacity: 0.5 },
 });

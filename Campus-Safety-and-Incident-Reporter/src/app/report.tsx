@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, TextInput, Pressable, ScrollView, Image, StyleSheet} from 'react-native';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
@@ -12,7 +12,7 @@ import { Header } from '../components/incidents/ui';
 import LocationSelector from '../components/LocationSelector';
 import PhotoSlots from '../components/incidents/PhotoSlots';
 import PhotoSourceSheet from '../components/incidents/PhotoSourceSheet';
-import { takePendingPhoto } from '@/services/pendingPhoto';
+import { takeAllPendingPhotos, subscribePendingPhoto } from '@/services/pendingPhoto';
 
 const MIN_IMAGES = 1;
 const MAX_IMAGES = 3;
@@ -41,10 +41,10 @@ export default function Report() {
 
   useFocusEffect(
   useCallback(() => {
-    const uri = takePendingPhoto();
-    console.log('PICKED UP URI:', uri);
-    if (uri) {
-      setF(prev => ({ ...prev, image: [...prev.image, uri].slice(0, MAX_IMAGES) }));
+    const uris = takeAllPendingPhotos();
+    console.log('PICKED UP URIS:', uris);
+    if (uris.length > 0) {
+      setF(prev => ({ ...prev, image: [...prev.image, ...uris].slice(0, MAX_IMAGES) }));
       setPhotoErr('');
     }
   }, [])
