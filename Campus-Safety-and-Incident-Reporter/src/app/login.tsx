@@ -91,9 +91,9 @@ const styles = StyleSheet.create({
     paddingTop: 100,
   },
   logo: {
-    width: 110,
-    height: 110,
-    borderRadius: 28,
+    width: 350,
+    height: 350,
+    borderRadius: 50,
   },
   appName: {
     fontSize: 24,
@@ -115,10 +115,11 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: "#D9D9D9",
-    height: 40,
+    height: 45,
     paddingHorizontal: 10,
     marginBottom: 14,
     fontSize: 13,
+    borderRadius: 10,
     // shadow (iOS)
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -128,17 +129,19 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   button: {
-    backgroundColor: "#D9D9D9",
-    width: 105,
-    height: 28,
+    backgroundColor: "#F3C623",
+    width: 100,
+    height: 45,
     alignSelf: "center",
     alignItems: "center",
     justifyContent: "center",
+    borderRadius: 10,
     marginTop: 12,
   },
   buttonText: {
     fontSize: 13,
-    color: "#333",
+    color: "#000000",
+    fontWeight: "bold",
   },
   link: {
     textAlign: "center",

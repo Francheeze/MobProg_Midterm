@@ -111,9 +111,9 @@ const styles = StyleSheet.create({
     paddingTop: 100,
   },
   logo: {
-    width: 110,
-    height: 110,
-    borderRadius: 28,
+    width: 350,
+    height: 350,
+    borderRadius: 50,
   },
   appName: {
     fontSize: 24,
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: "#D9D9D9",
-    height: 40,
+    height: 45,
     paddingHorizontal: 10,
     marginBottom: 14,
     fontSize: 13,
@@ -144,15 +144,17 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 2,
     elevation: 3,
+    borderRadius: 10,
   },
   button: {
-    backgroundColor: "#D9D9D9",
-    width: 105,
-    height: 28,
+    backgroundColor: "#F3C623",
+    width: 100,
+    height: 45,
     alignSelf: "center",
     alignItems: "center",
     justifyContent: "center",
     marginTop: 12,
+    borderRadius: 10,
   },
   buttonText: {
     fontSize: 13,
