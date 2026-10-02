@@ -1,0 +1,44 @@
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Colors } from '@/constants/colors';
+
+type Props = {
+  uri: string;
+  onRetake: () => void;
+  onConfirm: () => void;
+};
+
+/** "After Photo" frame in the wireframe: captured image + Retake / Confirm. */
+export default function PhotoPreview({ uri, onRetake, onConfirm }: Props) {
+  const insets = useSafeAreaInsets();
+
+  return (
+    <View
+      style={[
+        styles.container,
+        { paddingTop: insets.top + 12, paddingBottom: insets.bottom + 24 },
+      ]}>
+      <Image source={{ uri }} style={styles.image} resizeMode="contain" />
+
+      <View style={styles.buttons}>
+        <Pressable style={[styles.button, styles.retake]} onPress={onRetake}>
+          <Text style={styles.retakeText}>Retake</Text>
+        </Pressable>
+        <Pressable style={[styles.button, styles.confirm]} onPress={onConfirm}>
+          <Text style={styles.confirmText}>Confirm</Text>
+        </Pressable>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: Colors.background, paddingHorizontal: 16 },
+  image: { flex: 1, backgroundColor: Colors.panel, borderRadius: 4 },
+  buttons: { flexDirection: 'row', gap: 12, marginTop: 16 },
+  button: { flex: 1, paddingVertical: 14, borderRadius: 10, alignItems: 'center' },
+  retake: { backgroundColor: Colors.panel, borderWidth: 1, borderColor: '#9a9a9a' },
+  retakeText: { color: Colors.text, fontWeight: '600', fontSize: 16 },
+  confirm: { backgroundColor: Colors.navy },
+  confirmText: { color: Colors.white, fontWeight: '600', fontSize: 16 },
+});

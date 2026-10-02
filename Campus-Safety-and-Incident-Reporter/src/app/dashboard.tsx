@@ -18,11 +18,19 @@ function PhotoSwiper({ photos }: { photos: string[] }) {
       <ScrollView
         horizontal
         pagingEnabled
+        nestedScrollEnabled // ADDED
+        removeClippedSubviews={false} // ADDED
         showsHorizontalScrollIndicator={false}
         onMomentumScrollEnd={e => setIndex(Math.round(e.nativeEvent.contentOffset.x / w))}>
         {photos.map((uri, n) => (
-          <Pressable key={n} onPress={() => setFull(uri)}>
-            <Image source={{ uri }} style={{ width: w, height: 170, borderRadius: 6 }} resizeMode="cover" />
+          <Pressable key={n} onPress={() => setFull(uri)} style={{ width: w, height: 170 }}>
+            <Image
+              source={{ uri }}
+              style={{ width: w, height: 170, borderRadius: 6 }}
+              resizeMode="cover"
+              onLoad={() => console.log('IMAGE LOADED:', uri)} // ADDED
+              onError={e => console.log('IMAGE FAILED:', uri, e.nativeEvent.error)} // ADDED
+            />
           </Pressable>
         ))}
       </ScrollView>
@@ -66,7 +74,7 @@ export default function Dashboard() {
         hitSlop={10}
         accessibilityLabel="Open menu"
         style={[s.menuButton, { top: insets.top + 12 }]}>
-        <Ionicons name="menu" size={28} color="#fff" />
+        <Text style={{ color: '#fff', fontSize: 28 }}>☰</Text>
       </Pressable>
       <View style={s.searchWrap}>
         <TextInput style={s.search} placeholder="Search by title, category, date" value={q} onChangeText={setQ} />
