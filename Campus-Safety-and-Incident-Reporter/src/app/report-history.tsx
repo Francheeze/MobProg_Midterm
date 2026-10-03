@@ -1,24 +1,63 @@
+import { router, useLocalSearchParams } from "expo-router";
+import { useState } from "react";
 import {
-  View,
-  Text,
-  TextInput,
-  ScrollView,
-  StyleSheet,
+  Alert,
+  Image,
   Modal,
   Pressable,
-  Image,
-  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  useWindowDimensions,
+  View,
 } from "react-native";
-import { router } from "expo-router";
-import { useState } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import IncidentHistoryCard from "../components/incidents/IncidentHistoryCard";
-import { C, Incident, useIncidents, useCurrentUser } from "../components/incidents/store";
+import DrawerMenu from "../components/incidents/DrawerMenu";
+import { C, Incident, setCurrentUser, useCurrentUser, useIncidents } from "../components/incidents/store";
 import { Header } from "../components/incidents/ui";
 
+function PhotoSwiper({ photos }: { photos: string[] }) {
+  const { width: screenW } = useWindowDimensions();
+  const width = screenW - 36 - 32;
+  const [index, setIndex] = useState(0);
+
+  return (
+    <View>
+      <ScrollView
+        horizontal
+        pagingEnabled
+        nestedScrollEnabled
+        removeClippedSubviews={false}
+        showsHorizontalScrollIndicator={false}
+        onMomentumScrollEnd={(event) => setIndex(Math.round(event.nativeEvent.contentOffset.x / width))}>
+        {photos.filter(Boolean).map((photo, photoIndex) => (
+          <Image
+            key={`${photo}-${photoIndex}`}
+            source={{ uri: photo }}
+            style={{ width, height: 170, borderRadius: 6 }}
+            resizeMode="cover"
+          />
+        ))}
+      </ScrollView>
+      {photos.filter(Boolean).length > 1 && (
+        <View style={styles.dots}>
+          {photos.filter(Boolean).map((_, photoIndex) => (
+            <View key={photoIndex} style={[styles.dot, photoIndex === index && styles.dotActive]} />
+          ))}
+        </View>
+      )}
+    </View>
+  );
+}
 
 export default function ReportHistory() {
+  const insets = useSafeAreaInsets();
+  const { username } = useLocalSearchParams<{ username?: string }>();
   const { items, remove } = useIncidents();
   const currentUser = useCurrentUser();
+  const [menuOpen, setMenuOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<Incident | null>(null);
   const reports = items.filter((r) => r.author === currentUser);
@@ -33,6 +72,13 @@ export default function ReportHistory() {
   return (
     <View style={styles.container}>
       <Header title="Report History" back />
+      <Pressable
+        onPress={() => setMenuOpen(true)}
+        hitSlop={10}
+        accessibilityLabel="Open menu"
+        style={[styles.menuButton, { top: insets.top + 12 }]}>
+        <Text style={styles.menuText}>☰</Text>
+      </Pressable>
       <View style={styles.content}>
         <View style={styles.searchWrap}>
           <TextInput
@@ -78,9 +124,7 @@ export default function ReportHistory() {
               <>
                 <ScrollView contentContainerStyle={styles.previewContent}>
                   <Text style={styles.previewTitle}>{selected.title}</Text>
-                  {selected.image[0] && (
-                    <Image source={{ uri: selected.image[0] }} style={styles.previewImage} resizeMode="cover" />
-                  )}
+                  <PhotoSwiper photos={selected.image} />
                   {([
                     ["Category", selected.category],
                     ["Location", selected.location],
@@ -117,6 +161,15 @@ export default function ReportHistory() {
           </View>
         </View>
       </Modal>
+      <DrawerMenu
+        visible={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        username={username ?? currentUser ?? "User"}
+        onLogout={() => {
+          setCurrentUser(null);
+          router.replace("/login" as any);
+        }}
+      />
     </View>
   );
 }
@@ -125,6 +178,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: C.bg,
+  },
+
+  menuButton: {
+    position: "absolute",
+    right: 16,
+    zIndex: 10,
+  },
+
+  menuText: {
+    color: "#fff",
+    fontSize: 28,
   },
 
   content: {
@@ -170,7 +234,9 @@ const styles = StyleSheet.create({
   closeText: { color: C.mute, fontSize: 28, lineHeight: 30 },
   previewContent: { padding: 16 },
   previewTitle: { color: C.ink, fontSize: 18, fontWeight: "700", marginBottom: 12 },
-  previewImage: { width: "100%", height: 170, borderRadius: 6 },
+  dots: { flexDirection: "row", justifyContent: "center", gap: 6, marginTop: 8 },
+  dot: { width: 7, height: 7, borderRadius: 4, backgroundColor: C.line },
+  dotActive: { backgroundColor: C.navy },
   detailRow: { marginTop: 14 },
   detailLabel: { color: C.mute, fontSize: 11, marginBottom: 4 },
   detailValue: { color: C.ink, fontSize: 14 },
